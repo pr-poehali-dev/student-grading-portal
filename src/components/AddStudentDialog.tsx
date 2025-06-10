@@ -36,13 +36,16 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+        <Button
+          style={{ backgroundColor: "#004D85" }}
+          className="hover:bg-blue-800 text-white"
+        >
           ➕ Добавить студента
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-purple-900">Новый студент</DialogTitle>
+          <DialogTitle style={{ color: "#004D85" }}>Новый студент</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -53,7 +56,7 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Введите имя..."
-              className="border-gray-300 focus:border-purple-500"
+              className="border-gray-300 focus:border-blue-500"
             />
           </div>
           <div>
@@ -64,13 +67,14 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
               value={group}
               onChange={(e) => setGroup(e.target.value)}
               placeholder="Например: ИВТ-21"
-              className="border-gray-300 focus:border-purple-500"
+              className="border-gray-300 focus:border-blue-500"
             />
           </div>
           <div className="flex gap-2 pt-2">
             <Button
               type="submit"
-              className="flex-1 bg-purple-600 hover:bg-purple-700"
+              className="flex-1 hover:bg-blue-800"
+              style={{ backgroundColor: "#004D85" }}
               disabled={!name.trim() || !group.trim()}
             >
               Добавить

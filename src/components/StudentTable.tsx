@@ -7,29 +7,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Student } from "@/types/student";
-import GradeSelect from "./GradeSelect";
+import {
+  Student,
+  GRADE_COMPONENTS,
+  calculateTotalPoints,
+  calculateFinalGrade,
+} from "@/types/student";
+import GradeInput from "./GradeInput";
 
 interface StudentTableProps {
   students: Student[];
-  onUpdateGrade: (studentId: string, subject: string, grade: number) => void;
+  onUpdateGrade: (
+    studentId: string,
+    component: keyof Student["grades"],
+    points: number,
+  ) => void;
 }
 
 const StudentTable = ({ students, onUpdateGrade }: StudentTableProps) => {
-  const subjects = ["Математика", "Физика", "Программирование", "История"];
-
-  const getAverageGrade = (student: Student) => {
-    const grades = Object.values(student.grades);
-    if (grades.length === 0) return "—";
-    const avg = grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
-    return Math.round(avg * 10) / 10;
+  const getFinalGradeColor = (grade: number) => {
+    if (grade >= 4) return "text-green-600 font-bold";
+    if (grade >= 3) return "text-yellow-600 font-semibold";
+    if (grade >= 1) return "text-orange-600 font-medium";
+    return "text-red-600 font-medium";
   };
 
-  const getAverageColor = (avg: number | string) => {
-    if (avg === "—") return "text-gray-500";
-    const numAvg = typeof avg === "string" ? 0 : avg;
-    if (numAvg >= 4) return "text-green-600 font-semibold";
-    if (numAvg >= 3) return "text-yellow-600 font-medium";
+  const getTotalPointsColor = (points: number) => {
+    if (points >= 90) return "text-green-600 font-bold";
+    if (points >= 75) return "text-yellow-600 font-semibold";
+    if (points >= 60) return "text-orange-600 font-medium";
     return "text-red-600 font-medium";
   };
 
@@ -38,23 +44,29 @@ const StudentTable = ({ students, onUpdateGrade }: StudentTableProps) => {
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-purple-50 border-purple-100">
-              <TableHead className="font-semibold text-purple-900 w-48">
+            <TableRow
+              style={{ backgroundColor: "#004D85" }}
+              className="border-blue-700"
+            >
+              <TableHead className="font-semibold text-white w-48">
                 Студент
               </TableHead>
-              <TableHead className="font-semibold text-purple-900 w-24">
+              <TableHead className="font-semibold text-white w-24">
                 Группа
               </TableHead>
-              {subjects.map((subject) => (
+              {GRADE_COMPONENTS.map((component) => (
                 <TableHead
-                  key={subject}
-                  className="font-semibold text-purple-900 text-center w-24"
+                  key={component.key}
+                  className="font-semibold text-white text-center w-24"
                 >
-                  {subject}
+                  {component.name}
                 </TableHead>
               ))}
-              <TableHead className="font-semibold text-purple-900 text-center w-24">
-                Средняя
+              <TableHead className="font-semibold text-white text-center w-24">
+                Всего
+              </TableHead>
+              <TableHead className="font-semibold text-white text-center w-24">
+                Оценка
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -62,7 +74,7 @@ const StudentTable = ({ students, onUpdateGrade }: StudentTableProps) => {
             {students.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={subjects.length + 3}
+                  colSpan={GRADE_COMPONENTS.length + 4}
                   className="text-center text-gray-500 py-8"
                 >
                   📚 Пока нет студентов. Добавьте первого!
@@ -70,11 +82,12 @@ const StudentTable = ({ students, onUpdateGrade }: StudentTableProps) => {
               </TableRow>
             ) : (
               students.map((student) => {
-                const avgGrade = getAverageGrade(student);
+                const totalPoints = calculateTotalPoints(student.grades);
+                const finalGrade = calculateFinalGrade(totalPoints);
                 return (
                   <TableRow
                     key={student.id}
-                    className="hover:bg-slate-50 transition-colors"
+                    className="hover:bg-blue-50 transition-colors"
                   >
                     <TableCell className="font-medium text-slate-900">
                       {student.name}
@@ -82,20 +95,26 @@ const StudentTable = ({ students, onUpdateGrade }: StudentTableProps) => {
                     <TableCell className="text-slate-600">
                       {student.group}
                     </TableCell>
-                    {subjects.map((subject) => (
-                      <TableCell key={subject} className="text-center">
-                        <GradeSelect
-                          value={student.grades[subject]}
-                          onValueChange={(grade) =>
-                            onUpdateGrade(student.id, subject, grade)
+                    {GRADE_COMPONENTS.map((component) => (
+                      <TableCell key={component.key} className="text-center">
+                        <GradeInput
+                          value={student.grades[component.key]}
+                          onValueChange={(points) =>
+                            onUpdateGrade(student.id, component.key, points)
                           }
+                          maxPoints={component.maxPoints}
                         />
                       </TableCell>
                     ))}
                     <TableCell
-                      className={`text-center ${getAverageColor(avgGrade)}`}
+                      className={`text-center ${getTotalPointsColor(totalPoints)}`}
                     >
-                      {avgGrade}
+                      {totalPoints}/100
+                    </TableCell>
+                    <TableCell
+                      className={`text-center ${getFinalGradeColor(finalGrade)}`}
+                    >
+                      {finalGrade}
                     </TableCell>
                   </TableRow>
                 );
