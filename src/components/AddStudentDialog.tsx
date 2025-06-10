@@ -17,18 +17,15 @@ interface AddStudentDialogProps {
 const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [group, setGroup] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim() && group.trim()) {
+    if (name.trim()) {
       onAddStudent({
         name: name.trim(),
-        group: group.trim(),
-        grades: {},
+        grades: { attendance: 0, activity: 0, assignments: 0, exam: 0 },
       });
       setName("");
-      setGroup("");
       setOpen(false);
     }
   };
@@ -59,23 +56,12 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
               className="border-gray-300 focus:border-blue-500"
             />
           </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">
-              Группа
-            </label>
-            <Input
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-              placeholder="Например: ИВТ-21"
-              className="border-gray-300 focus:border-blue-500"
-            />
-          </div>
           <div className="flex gap-2 pt-2">
             <Button
               type="submit"
               className="flex-1 hover:bg-blue-800"
               style={{ backgroundColor: "#004D85" }}
-              disabled={!name.trim() || !group.trim()}
+              disabled={!name.trim()}
             >
               Добавить
             </Button>

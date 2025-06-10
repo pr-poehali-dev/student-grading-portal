@@ -74,7 +74,7 @@ const StudentTable = ({ students, onUpdateGrade }: StudentTableProps) => {
             {students.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={GRADE_COMPONENTS.length + 4}
+                  colSpan={GRADE_COMPONENTS.length + 3}
                   className="text-center text-gray-500 py-8"
                 >
                   📚 Пока нет студентов. Добавьте первого!

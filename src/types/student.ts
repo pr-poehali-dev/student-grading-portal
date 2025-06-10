@@ -1,13 +1,18 @@
 export interface Student {
   id: string;
   name: string;
-  group: string;
   grades: {
     attendance: number; // посещение (макс 18)
     activity: number; // учебная активность (макс 18)
     assignments: number; // выполненные задания (макс 44)
     exam: number; // экзамен/зачет (макс 20)
   };
+}
+
+export interface Subject {
+  id: string;
+  name: string;
+  group: string;
 }
 
 export interface GradeComponent {
@@ -21,6 +26,15 @@ export const GRADE_COMPONENTS: GradeComponent[] = [
   { key: "activity", name: "Активность", maxPoints: 18 },
   { key: "assignments", name: "Задания", maxPoints: 44 },
   { key: "exam", name: "Экзамен", maxPoints: 20 },
+];
+
+export const SUBJECTS: Subject[] = [
+  { id: "1", name: "Программирование", group: "ИВТ-21" },
+  { id: "2", name: "Базы данных", group: "ИВТ-21" },
+  { id: "3", name: "Веб-технологии", group: "ИВТ-21" },
+  { id: "4", name: "Математика", group: "ИВТ-22" },
+  { id: "5", name: "Физика", group: "ИВТ-22" },
+  { id: "6", name: "Алгоритмы", group: "ИВТ-23" },
 ];
 
 export const calculateTotalPoints = (grades: Student["grades"]): number => {
